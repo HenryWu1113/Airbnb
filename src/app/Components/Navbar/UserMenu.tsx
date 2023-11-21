@@ -11,7 +11,6 @@ const UserMenu = () => {
   const [isOpen, setIsOpen] = useState(false)
 
   const toggleOpen = useCallback(() => {
-    console.log('adfs')
     setIsOpen((value) => !value)
   }, [])
 
@@ -19,7 +18,7 @@ const UserMenu = () => {
     <div className='relative'>
       <div className='flex flex-row items-center gap-3'>
         <div
-          onClick={(e: any) => e.targer.value}
+          onClick={(e: any) => e.target.value}
           className='
       hidden
       md:block

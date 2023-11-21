@@ -4,6 +4,8 @@ import axios from 'axios'
 import { AiFillGithub } from 'react-icons/ai'
 import { FcGoogle } from 'react-icons/fc'
 import { useState, useCallback } from 'react'
+// FieldValues 是定義 key 是字串 value 可以隨便型態
+// SubmitHandler 是定義 sumbit function 型別
 import { FieldValues, SubmitHandler, useForm } from 'react-hook-form'
 
 import useRegisterModal from '@/app/hooks/useRegisterModal'
@@ -18,6 +20,13 @@ import Button from '../Button'
 const RegisterModal = () => {
   const RegisterModal = useRegisterModal()
   const [isLoading, setIsLoading] = useState(false)
+
+  // 從 useForm 解構
+  // register 驗證內容(放在 input select)
+  // handleSubmit 執行後會先去驗證 register 的驗證內容 無誤後才會執行包在裡面的 function
+  // formState: { errors } 是可以知道該 input 是否符合驗證(這裡需要是可以在 input 的 class 做判斷)
+  // errors 是一個物件 errors[id] 可得知是否通過 register 驗證內容 => {...register(id, { required })}
+  // defaultValues 有加沒加一樣 主要看你所有 input 的 {...register(id, { required })} 的 id 有哪些
 
   const {
     register,

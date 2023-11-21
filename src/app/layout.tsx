@@ -3,8 +3,10 @@ import { Nunito } from 'next/font/google'
 import './globals.css'
 import Navbar from '@/app/Components/Navbar/Navbar'
 import RegisterModal from '@/app/Components/Modals/RegisterModal'
+// 讓 ToasterProvider 可以全局使用
 import ToasterProvider from './providers/ToasterProvider'
 
+// 設定字型
 const font = Nunito({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
