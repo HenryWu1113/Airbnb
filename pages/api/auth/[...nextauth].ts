@@ -25,9 +25,9 @@ export const authOptions: AuthOptions = {
         password: { label: 'password', type: 'password' }
       },
       async authorize(credentials) {
+        // 這裡面 console.log 目前看似無效
         // 如果登入中沒有信箱或密碼 丟錯誤
         if (!credentials?.email || !credentials?.password) {
-          console.log(credentials)
           throw new Error('Invalid credentials')
         }
 
@@ -40,8 +40,6 @@ export const authOptions: AuthOptions = {
 
         // 沒有使用者或使用者沒有密碼 丟錯誤
         if (!user || !user?.hashedPassword) {
-          console.log(credentials)
-
           throw new Error('Invalid credentials')
         }
 
@@ -53,11 +51,10 @@ export const authOptions: AuthOptions = {
 
         // 比對密碼不一樣就丟錯誤
         if (!isCorrectPassword) {
-          console.log(credentials)
           throw new Error('Invalid credentials')
         }
 
-        return
+        return user
       }
     })
   ],
