@@ -49,18 +49,23 @@ const LoginModal = () => {
 
     console.log(data)
 
+    // 引入 next-auth 的 signIn，把登入要的信箱密碼存入做驗證
     signIn('credentials', {
       ...data,
       redirect: false
     }).then((callback) => {
       setIsLoading(false)
 
+      // {error: null, status: 200, ok: true, url: 'http://localhost:3000/'}
+      // 登入成功
       if (callback?.ok) {
         toast.success('Logged in ')
         router.refresh()
         loginModal.onClose()
       }
 
+      // {error: 'Invalid credentials', status: 401, ok: false, url: null}
+      // 登入失敗
       if (callback?.error) {
         console.log(callback)
         toast.error(callback.error)
