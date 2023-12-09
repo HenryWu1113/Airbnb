@@ -1,7 +1,7 @@
 import { getServerSession } from 'next-auth/next'
 
-import { authOptions } from '../../../pages/api/auth/[...nextauth]'
-import prisma from '../../app/libs/prismadb'
+import { authOptions } from '@/pages/api/auth/[...nextauth]'
+import prisma from '@/app/libs/prismadb'
 
 // 影片說這不是一支 api 所以不回傳錯誤改回傳 null
 export async function getSession() {
