@@ -60,6 +60,7 @@ const LoginModal = () => {
       // 登入成功
       if (callback?.ok) {
         toast.success('Logged in ')
+        console.log(callback)
         router.refresh()
         loginModal.onClose()
       }
@@ -109,7 +110,7 @@ const LoginModal = () => {
         outline
         label='Continue with Github'
         icon={AiFillGithub}
-        onClick={() => {}}
+        onClick={() => signIn('github')}
       />
       <div
         className='
