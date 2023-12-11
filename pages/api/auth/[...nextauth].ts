@@ -25,7 +25,7 @@ export const authOptions: AuthOptions = {
         password: { label: 'password', type: 'password' }
       },
       async authorize(credentials) {
-        // 這裡面 console.log 目前看似無效
+        // 這裡面 console.log 目前看似無效(顯示在 vscode 的終端機上因為是 server 端)
         // 如果登入中沒有信箱或密碼 丟錯誤
         if (!credentials?.email || !credentials?.password) {
           throw new Error('Invalid credentials')
@@ -53,7 +53,7 @@ export const authOptions: AuthOptions = {
         if (!isCorrectPassword) {
           throw new Error('Invalid credentials')
         }
-
+        console.log(user)
         return user
       }
     })

@@ -59,7 +59,7 @@ const LoginModal = () => {
       // {error: null, status: 200, ok: true, url: 'http://localhost:3000/'}
       // 登入成功
       if (callback?.ok) {
-        toast.success('Logged in ')
+        toast.success('Logged in')
         console.log(callback)
         router.refresh()
         loginModal.onClose()
@@ -104,7 +104,7 @@ const LoginModal = () => {
         outline
         label='Continue with Google'
         icon={FcGoogle}
-        onClick={() => {}}
+        onClick={() => signIn('google')}
       />
       <Button
         outline
