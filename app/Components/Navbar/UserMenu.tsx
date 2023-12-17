@@ -6,6 +6,7 @@ import MenuItem from './MenuItem'
 import { useState, useCallback } from 'react'
 import useLoginModal from '@/app/hooks/useLoginModal'
 import useRegisterModal from '@/app/hooks/useRegisterModal'
+import useRentModal from '@/app/hooks/useRentModal'
 
 import { User } from '@prisma/client'
 // 引入 next-auth 的 signOut 就可以登出(好像是會自動把 token 移除)
@@ -19,17 +20,27 @@ interface UserMenuProps {
 const UserMenu: React.FC<UserMenuProps> = ({ currentUser }) => {
   const registerModal = useRegisterModal()
   const loginModal = useLoginModal()
+  const rentModal = useRentModal()
   const [isOpen, setIsOpen] = useState(false)
 
   const toggleOpen = useCallback(() => {
     setIsOpen((value) => !value)
   }, [])
 
+  const onRent = useCallback(() => {
+    // 如果未登入，跳轉登入畫面並 return
+    if (!currentUser) {
+      return loginModal.onOpen()
+    }
+
+    rentModal.onOpen()
+  }, [currentUser, loginModal, rentModal])
+
   return (
     <div className='relative'>
       <div className='flex flex-row items-center gap-3'>
         <div
-          onClick={(e: any) => e.target.value}
+          onClick={onRent}
           className='
       hidden
       md:block
@@ -90,7 +101,7 @@ const UserMenu: React.FC<UserMenuProps> = ({ currentUser }) => {
                 <MenuItem onClick={() => {}} label='My favorites' />
                 <MenuItem onClick={() => {}} label='My reservations' />
                 <MenuItem onClick={() => {}} label='My properties' />
-                <MenuItem onClick={() => {}} label='Airbnb my home' />
+                <MenuItem onClick={rentModal.onOpen} label='Airbnb my home' />
                 <hr />
                 <MenuItem onClick={() => signOut()} label='Logout' />
               </>

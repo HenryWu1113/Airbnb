@@ -7,4 +7,24 @@ body {
   :root {
     height: 100%;
   }
+  ::-webkit-scrollbar {
+    /* display: none; */
+  }
+  ::-webkit-scrollbar {
+    height: 8px;
+    width: 8px;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: #bebebe;
+    border-radius: 10px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: #cecece;
+  }
+
+  ::-webkit-scrollbar-track-piece {
+    border-radius: 10px;
+  }
 }

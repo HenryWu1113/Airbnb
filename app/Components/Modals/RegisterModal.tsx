@@ -9,6 +9,7 @@ import { useState, useCallback } from 'react'
 import { FieldValues, SubmitHandler, useForm } from 'react-hook-form'
 
 import useRegisterModal from '@/app/hooks/useRegisterModal'
+import useLoginModal from '@/app/hooks/useLoginModal'
 
 import Modal from './Modal'
 import Heading from '../Heading'
@@ -19,7 +20,8 @@ import Button from '../Button'
 import { signIn } from 'next-auth/react'
 
 const RegisterModal = () => {
-  const RegisterModal = useRegisterModal()
+  const registerModal = useRegisterModal()
+  const loginModal = useLoginModal()
   const [isLoading, setIsLoading] = useState(false)
 
   // 從 useForm 解構
@@ -47,7 +49,7 @@ const RegisterModal = () => {
     axios
       .post('/api/register', data)
       .then(() => {
-        RegisterModal.onClose()
+        registerModal.onClose()
       })
       .catch((error) => {
         console.log(error)
@@ -57,6 +59,12 @@ const RegisterModal = () => {
         setIsLoading(false)
       })
   }
+
+  /** 跳轉登入畫面 */
+  const toggle = useCallback(() => {
+    loginModal.onOpen()
+    registerModal.onClose()
+  }, [loginModal, registerModal])
 
   const bodyContent = (
     <div className='flex flex-col gap-4'>
@@ -115,7 +123,7 @@ const RegisterModal = () => {
         <div className=' flex flex-row justify-center items-center gap-2'>
           <div>Already have an account?</div>
           <div
-            onClick={RegisterModal.onClose}
+            onClick={toggle}
             className='text-neutral-800 cursor-pointer hover:underline'
           >
             Log in
@@ -128,10 +136,10 @@ const RegisterModal = () => {
   return (
     <Modal
       disabled={isLoading}
-      isOpen={RegisterModal.isOpen}
+      isOpen={registerModal.isOpen}
       title='Register'
       actionLabel='Continue'
-      onClose={RegisterModal.onClose}
+      onClose={registerModal.onClose}
       onSubmit={handleSubmit(onSubmit)}
       body={bodyContent}
       footer={footerContent}
