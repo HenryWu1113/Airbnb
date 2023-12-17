@@ -4,6 +4,7 @@
 
 html,
 body {
+  font-family: 'Twemoji Country Flags';
   :root {
     height: 100%;
   }
