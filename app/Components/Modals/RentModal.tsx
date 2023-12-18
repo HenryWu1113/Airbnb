@@ -1,5 +1,7 @@
 'use client'
 
+import dynamic from 'next/dynamic'
+
 import useRentModal from '@/app/hooks/useRentModal'
 
 import Modal from './Modal'
@@ -87,6 +89,12 @@ const RentModal = () => {
     return 'Back'
   }, [step])
 
+  /**
+   * 動態引入 Map 元件 (不然會出現 window is not defined 神奇的錯誤)
+   * 引入一定要放在 functional component 裡，不然修改此元件儲存會顯示已經載入過 Map 元件的錯誤(畫面直接死)
+   */
+  const DynamicMap = dynamic(() => import('../Map'))
+
   let bodyContent = (
     <div className='flex flex-col gap-8'>
       <Heading
@@ -132,7 +140,7 @@ const RentModal = () => {
           value={location}
           onChange={(value) => setCustomValue('location', value)}
         />
-        <Map />
+        <DynamicMap center={location?.latlng} />
       </div>
     )
   }

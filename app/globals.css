@@ -4,7 +4,6 @@
 
 html,
 body {
-  font-family: 'Twemoji Country Flags';
   :root {
     height: 100%;
   }
@@ -28,4 +27,11 @@ body {
   ::-webkit-scrollbar-track-piece {
     border-radius: 10px;
   }
+}
+
+.leaflet-bottom,
+.leaflet-control,
+.leaflet-pane,
+.leaflet-top {
+  z-index: 0 !important;
 }
