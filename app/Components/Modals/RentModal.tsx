@@ -1,19 +1,24 @@
 'use client'
 
 import dynamic from 'next/dynamic'
+import axios from 'axios'
 
 import useRentModal from '@/app/hooks/useRentModal'
-
 import Modal from './Modal'
 import Heading from '../Heading'
 import CategoryInput from '../Inputs/CategoryInput'
 import CountrySelect from '../Inputs/CountrySelect'
-import Map from '../../Components/Map'
+import Counter from '../Inputs/Counter'
+import ImageUpload from '../Inputs/ImageUpload'
+import Input from '../Inputs/Input'
 
-import { useForm, FieldValues } from 'react-hook-form'
+import { useForm, FieldValues, SubmitHandler } from 'react-hook-form'
 import { useMemo, useState } from 'react'
+import { useRouter } from 'next/navigation'
 
 import { categories } from '../Navbar/Categories'
+
+import { toast } from 'react-hot-toast'
 
 enum STEPS {
   CATEGORY = 0,
@@ -25,9 +30,11 @@ enum STEPS {
 }
 
 const RentModal = () => {
+  const router = useRouter()
   const rentModal = useRentModal()
 
   const [step, setStep] = useState(STEPS.CATEGORY)
+  const [isLoading, setIsLoading] = useState(false)
 
   const {
     register,
@@ -53,6 +60,19 @@ const RentModal = () => {
   /** 監聽目前的值(可以做是否被選取的判斷) */
   const category: string = watch('category')
   const location: any = watch('location')
+  const guestCount: number = watch('guestCount')
+  const roomCount: number = watch('roomCount')
+  const bathroomCount: number = watch('bathroomCount')
+  const imageSrc: string = watch('imageSrc')
+
+  /**
+   * 動態引入 Map 元件 (不然會出現 window is not defined 神奇的錯誤)
+   * 引入一定要放在 functional component 裡，不然修改此元件儲存會顯示已經載入過 Map 元件的錯誤(畫面直接死)
+   */
+  const Map = useMemo(
+    () => dynamic(() => import('../Map'), { ssr: false }),
+    [location]
+  )
 
   const setCustomValue = (id: string, value: any) => {
     // console.log(id)
@@ -73,6 +93,30 @@ const RentModal = () => {
     setStep((preV) => preV + 1)
   }
 
+  const onSubmit: SubmitHandler<FieldValues> = (data) => {
+    if (step !== STEPS.PRICE) {
+      return onNext()
+    }
+
+    setIsLoading(true)
+
+    axios
+      .post('/api/listings', data)
+      .then(() => {
+        toast.success('Listing created!')
+        router.refresh()
+        reset()
+        setStep(STEPS.CATEGORY)
+        rentModal.onClose()
+      })
+      .catch(() => {
+        toast.error('Something went wrong.')
+      })
+      .finally(() => {
+        setIsLoading(false)
+      })
+  }
+
   const actionLabel = useMemo(() => {
     if (step === STEPS.PRICE) {
       return 'Create'
@@ -88,12 +132,6 @@ const RentModal = () => {
 
     return 'Back'
   }, [step])
-
-  /**
-   * 動態引入 Map 元件 (不然會出現 window is not defined 神奇的錯誤)
-   * 引入一定要放在 functional component 裡，不然修改此元件儲存會顯示已經載入過 Map 元件的錯誤(畫面直接死)
-   */
-  const DynamicMap = dynamic(() => import('../Map'))
 
   let bodyContent = (
     <div className='flex flex-col gap-8'>
@@ -140,7 +178,100 @@ const RentModal = () => {
           value={location}
           onChange={(value) => setCustomValue('location', value)}
         />
-        <DynamicMap center={location?.latlng} />
+        <Map center={location?.latlng} />
+      </div>
+    )
+  }
+
+  if (step === STEPS.INFO) {
+    bodyContent = (
+      <div className='flex flex-col gap-8'>
+        <Heading
+          title='Share some basics about your place'
+          subtitle='What amenitis do you have?'
+        />
+        <Counter
+          title='Guests'
+          subtitle='How many guests do you allow?'
+          value={guestCount}
+          onChange={(value) => setCustomValue('guestCount', value)}
+        />
+        <Counter
+          title='Rooms'
+          subtitle='How many rooms do you have?'
+          value={roomCount}
+          onChange={(value) => setCustomValue('roomCount', value)}
+        />
+        <Counter
+          title='Bathrooms'
+          subtitle='How many bathrooms do you have?'
+          value={bathroomCount}
+          onChange={(value) => setCustomValue('bathroomCount', value)}
+        />
+      </div>
+    )
+  }
+
+  if (step === STEPS.IMAGES) {
+    bodyContent = (
+      <div className='flex flex-col gap-8'>
+        <Heading
+          title='Add a photo of your place'
+          subtitle='Show guests what your place looks like!'
+        />
+        <ImageUpload
+          value={imageSrc}
+          onChange={(value) => setCustomValue('imageSrc', value)}
+        />
+      </div>
+    )
+  }
+
+  if (step === STEPS.DESCRIPTION) {
+    bodyContent = (
+      <div className='flex flex-col gap-8'>
+        <Heading
+          title='How would you describe your place?'
+          subtitle='Short and sweet works best!'
+        />
+        <Input
+          id='title'
+          label='Title'
+          disabled={isLoading}
+          register={register}
+          errors={errors}
+          required
+        />
+        <hr />
+        <Input
+          id='description'
+          label='Description'
+          disabled={isLoading}
+          register={register}
+          errors={errors}
+          required
+        />
+      </div>
+    )
+  }
+
+  if (step === STEPS.PRICE) {
+    bodyContent = (
+      <div className='flex flex-col gap-8'>
+        <Heading
+          title='Now, set your price!'
+          subtitle='How much do you charge per night?'
+        />
+        <Input
+          id='price'
+          label='Price'
+          formatPrice
+          type='number'
+          disabled={isLoading}
+          register={register}
+          errors={errors}
+          required
+        />
       </div>
     )
   }
@@ -149,7 +280,7 @@ const RentModal = () => {
     <Modal
       isOpen={rentModal.isOpen}
       onClose={rentModal.onClose}
-      onSubmit={onNext}
+      onSubmit={handleSubmit(onSubmit)}
       actionLabel={actionLabel}
       secondaryActionLabel={secondaryActionLabel}
       secondaryAction={step === STEPS.CATEGORY ? undefined : onBack}
