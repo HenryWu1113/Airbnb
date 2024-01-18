@@ -1,4 +1,4 @@
-import { User } from '@prisma/client'
+import { User, Listing } from '@prisma/client'
 
 /* 第一個參數是傳入的 Type, 第二個參數是要忽略的欄位，
 並會回傳一個新的 Type, 這是 TypeScript Utility Types 的標準用法。 */
@@ -11,4 +11,8 @@ export type SafeUser = Omit<
   createAt: string
   updatedAt: string
   emailVerified: string | null
+}
+
+export type SafeListing = Omit<Listing, 'createdAt'> & {
+  createdAt: string
 }
