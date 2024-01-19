@@ -29,8 +29,8 @@ export default async function getCurrentUser() {
     // 在 terminal 出現前端不能出現 schema 的 DateTime type 的錯誤(影片) 所以這裡回傳給前端把日期的格式改成這樣
     return {
       ...currentUser,
-      createAt: currentUser.createdAt.toISOString(),
-      updatedAt: currentUser.updateAt.toISOString(),
+      createdAt: currentUser.createdAt.toISOString(),
+      updatedAt: currentUser.updatedAt.toISOString(),
       emailVerified: currentUser.emailVerified?.toISOString() || null
     }
   } catch (error: any) {
