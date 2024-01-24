@@ -2,9 +2,12 @@ import type { Metadata } from 'next'
 import { Nunito } from 'next/font/google'
 import './globals.css'
 import Navbar from '@/app/Components/Navbar/Navbar'
+
 import RegisterModal from '@/app/Components/Modals/RegisterModal'
 import LoginModal from '@/app/Components/Modals/LoginModal'
 import RentModal from '@/app/Components/Modals/RentModal'
+import SearchModal from './Components/Modals/SearchModal'
+
 // 讓 ToasterProvider 可以全局使用
 import ToasterProvider from './providers/ToasterProvider'
 import getCurrentUser from './actions/getCurrentUser'
@@ -28,6 +31,7 @@ export default async function RootLayout({
     <html lang='en'>
       <body className={font.className}>
         <ToasterProvider />
+        <SearchModal />
         <RentModal />
         <LoginModal />
         <RegisterModal />
